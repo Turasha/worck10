@@ -104,30 +104,121 @@
 
 //  async  await with fetch
 
+// let input = document.getElementById("input-filter");
+// let ulElement = document.getElementById("result");
+// let listItems = [];
+
+// async function asyncfnc() {
+//   let response = await fetch("https://reqres.in/api/users?page=2");
+//   console.log(response);
+//   if (!response.ok) {
+//     throw new Error("cent fatch data");
+//   }
+//   let responsedata = await response.json();
+//   responsedata.data.forEach((element) => {
+//     let li = document.createElement("li");
+//     li.textContent = `${element.first_name} ${element.last_name}`;
+//     listItems.push(li);
+//     ulElement.appendChild(li);
+//   });
+// }
+
+// asyncfnc();
+
+// function filtreData(searchItem) {
+//   listItems.forEach((item) => {
+//     if (item.innerText.toLowerCase().includes(searchItem.toLowerCase())) {
+//       item.classList.remove("active");
+//     } else {
+//       item.classList.add("active");
+//     }
+//   });
+// }
+
+// input.addEventListener("keyup", function () {
+//   filtreData(this.value);
+// });
+
+// .then((mosuliInfo)=>{
+//     let p =document.createElement('p')
+//   p. innerText =mosuliInfo.data[1].first_name
+//     api.appendChild(p)
+
+// }).catch((error)=>console.log(error))
+
+let wait = function (second) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, second * 1000);
+  });
+};
+
+//
+let imgConteinr = document.querySelector(".images");
+let currentImage;
+let createImgElement = function (imagePath) {
+  return new Promise(function (resolve, reject) {
+    let imageNewEl = document.createElement("img");
+    imageNewEl.src = imagePath;
+
+    imageNewEl.addEventListener("load", function () {
+      imgConteinr.appendChild(imageNewEl);
+      resolve(imageNewEl);
+    });
+    imageNewEl.addEventListener("error", function () {
+      reject(new Error("image not found"));
+    });
+  });
+};
+
+createImgElement("images/img1.jpg")
+  .then((image) => {
+    currentImage = image;
+    return wait(2);
+  })
+  .then(() => {
+    currentImage.style.display = "none";
+    return createImgElement("images/img2.jpeg");
+  })
+  .then((image) => {
+    currentImage = image;
+    return wait(2);
+  })
+  .then(() => {
+    currentImage.style.display = "none";
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
+// async await
+
 let input = document.getElementById("input-filter");
 let ulElement = document.getElementById("result");
 let listItems = [];
 
 async function asyncfnc() {
-  let response = await fetch("https://reqres.in/api/users?page=2");
-  console.log(response);
-  if (!response.ok) {
-    throw new Error("cent fatch data");
+  try {
+    let response = await fetch("https://reqres.in/api/users?page=2");
+    if (!response.ok) {
+      throw new Error("cent fatch data");
+    }
+    let responsedata = await response.json();
+    responsedata.data.forEach((element) => {
+      let li = document.createElement("li");
+      li.textContent = `${element.first_name} ${element.last_name}`;
+      listItems.push(li);
+      ulElement.appendChild(li);
+    });
+  } catch (error) {
+    console.log(error);
   }
-  let responsedata = await response.json();
-  responsedata.data.forEach((element) => {
-    let li = document.createElement("li");
-    li.textContent = `${element.first_name} ${element.last_name}`;
-    listItems.push(li);
-    ulElement.appendChild(li);
-  });
 }
 
 asyncfnc();
 
-function filtreData(searchItem) {
+function filtreData(serchitem) {
   listItems.forEach((item) => {
-    if (item.innerText.toLowerCase().includes(searchItem.toLowerCase())) {
+    if (item.innerText.toLowerCase().includes(serchitem.toLowerCase())) {
       item.classList.remove("active");
     } else {
       item.classList.add("active");
@@ -138,10 +229,3 @@ function filtreData(searchItem) {
 input.addEventListener("keyup", function () {
   filtreData(this.value);
 });
-
-// .then((mosuliInfo)=>{
-//     let p =document.createElement('p')
-//   p. innerText =mosuliInfo.data[1].first_name
-//     api.appendChild(p)
-
-// }).catch((error)=>console.log(error))
